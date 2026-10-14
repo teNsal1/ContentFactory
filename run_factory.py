@@ -6,16 +6,17 @@ ROOT = Path(__file__).resolve().parent
 
 STEPS = [
     ("Создание сценария", "create_script.py"),
-    ("Генерация озвучки", "create_audio.py"),
-    ("Создание сцен", "create_scenes.py"),
-    ("Распознавание речи и субтитры", "make_subtitles.py"),
-    ("Сборка видео", "create_video.py"),
-    ("Наложение субтитров", "add_subtitles.py"),
+    ("Создание сцен", "create_spiderman_scenes.py"),
+    ("Создание озвучки", "create_audio.py"),
+    ("Создание видео из сцен", "create_spiderman_video.py"),
+    ("Создание субтитров из сценария", "create_subtitles.py"),
+    ("Наложение русских субтитров", "add_spiderman_subtitles.py"),
 ]
+
 
 def main():
     print("=" * 50)
-    print("CONTENT FACTORY — запуск производства")
+    print("CONTENT FACTORY — SPIDER-MAN")
     print("=" * 50)
 
     for number, (title, filename) in enumerate(STEPS, 1):
@@ -23,7 +24,7 @@ def main():
 
         if not script.exists():
             raise FileNotFoundError(
-                f"Не найден скрипт: {filename}"
+                f"Не найден файл: {filename}"
             )
 
         print(f"\n[{number}/{len(STEPS)}] {title}")
@@ -35,24 +36,27 @@ def main():
             check=True,
         )
 
-    final_video = ROOT / "output" / "loki_final.mp4"
+    final_video = ROOT / "output" / "spiderman_final.mp4"
 
     if not final_video.exists():
         raise FileNotFoundError(
-            "Процесс завершился, но итоговое видео не найдено."
+            f"Итоговое видео не найдено: {final_video}"
         )
 
     print("\n" + "=" * 50)
-    print("ГОТОВО! Все этапы выполнены.")
+    print("ГОТОВО! Видео создано.")
     print(f"Видео: {final_video}")
     print("=" * 50)
+
 
 if __name__ == "__main__":
     try:
         main()
     except subprocess.CalledProcessError as error:
-        print(f"\nОШИБКА: этап завершился с кодом {error.returncode}.")
-        print("Исправим ошибку, не удаляя рабочие файлы.")
+        print(
+            f"\nОШИБКА: этап завершился с кодом "
+            f"{error.returncode}."
+        )
         sys.exit(error.returncode)
     except Exception as error:
         print(f"\nОШИБКА: {error}")

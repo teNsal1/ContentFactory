@@ -4,7 +4,7 @@ import re
 import imageio_ffmpeg
 
 OUT = Path("output")
-SCENES = OUT / "spiderman_scenes"
+SCENES = OUT / "scenes"
 AUDIO = OUT / "spiderman_narration.mp3"
 VIDEO = OUT / "spiderman_visuals.mp4"
 
