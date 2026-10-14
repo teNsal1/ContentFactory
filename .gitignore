@@ -1,0 +1,21 @@
+﻿.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+
+# Generated videos
+output/*.mp4
+output/*.mp3
+output/*.wav
+
+# Generated scene images and subtitle frames
+output/scenes/
+output/spiderman_scenes/
+output/subtitle_frames/
+output/spiderman_subtitle_frames/
+
+# Temporary and backup files
+*.bak
+
+output/
