@@ -19,6 +19,116 @@ def get_font(size):
     return ImageFont.load_default()
 
 def make_scene(index, title, subtitle, color):
+    if "океан" in script["topic"].casefold():
+        img = Image.new("RGB", (W, H), (2, 25, 55))
+        pixels = img.load()
+
+        # Градиент: поверхность светлее, глубина темнее
+        for y in range(H):
+            depth = y / H
+            for x in range(W):
+                wave = int(8 * math.sin(x / 65 + y / 180))
+                pixels[x, y] = (
+                    max(0, int(5 + 5 * (1 - depth))),
+                    max(0, int(95 - 75 * depth + wave)),
+                    max(0, int(155 - 115 * depth + wave)),
+                )
+
+        draw = ImageDraw.Draw(img, "RGBA")
+
+        # Световые лучи под водой
+        draw.polygon(
+            [(180, 0), (260, 0), (490, 850), (350, 850)],
+            fill=(120, 220, 255, 18),
+        )
+        draw.polygon(
+            [(420, 0), (480, 0), (650, 780), (540, 780)],
+            fill=(120, 220, 255, 15),
+        )
+
+        # Пузырьки
+        for _ in range(65):
+            x = random.randint(15, W - 15)
+            y = random.randint(80, 850)
+            r = random.randint(2, 8)
+            draw.ellipse(
+                (x - r, y - r, x + r, y + r),
+                outline=(180, 235, 255, 150),
+                width=2,
+            )
+
+        # Силуэты рыб
+        for _ in range(7):
+            x = random.randint(50, W - 100)
+            y = random.randint(300, 800)
+            size = random.randint(20, 42)
+            direction = random.choice([-1, 1])
+
+            draw.ellipse(
+                (x, y, x + size * 2, y + size),
+                fill=(5, 35, 65, 190),
+            )
+
+            if direction == 1:
+                tail = [
+                    (x, y + size // 2),
+                    (x - size // 2, y),
+                    (x - size // 2, y + size),
+                ]
+            else:
+                tail = [
+                    (x + size * 2, y + size // 2),
+                    (x + size * 2 + size // 2, y),
+                    (x + size * 2 + size // 2, y + size),
+                ]
+
+            draw.polygon(tail, fill=(5, 35, 65, 190))
+
+        # Морское дно
+        draw.ellipse(
+            (-100, 1080, W + 100, 1430),
+            fill=(35, 75, 70, 255),
+        )
+
+        # Водоросли
+        for x in (70, 135, 570, 640):
+            for branch in range(3):
+                draw.line(
+                    (x, 1110, x + (branch - 1) * 25, 950 - branch * 25),
+                    fill=(45, 155, 105, 220),
+                    width=8,
+                )
+
+        # Заголовок и подпись
+        title_font = get_font(36)
+        subtitle_font = get_font(23)
+
+        draw.rounded_rectangle(
+            (25, 900, W - 25, 1120),
+            radius=24,
+            fill=(0, 15, 35, 220),
+            outline=(70, 205, 235, 230),
+            width=3,
+        )
+
+        def centered(text, y, font, fill):
+            box = draw.textbbox((0, 0), text, font=font)
+            text_width = box[2] - box[0]
+            x = max(10, (W - text_width) // 2)
+            draw.text((x, y), text, font=font, fill=fill)
+
+        centered(title, 935, title_font, (255, 255, 255, 255))
+        centered(subtitle, 1000, subtitle_font, (175, 230, 255, 255))
+        centered(
+            f"ОКЕАН  /  {index:02d}",
+            1160,
+            get_font(21),
+            (100, 220, 240, 255),
+        )
+
+        img.save(OUT / f"scene_{index:02d}.png")
+        print(f"Создана океанская сцена {index}/6: {title}")
+        return
     if "космос" in script["topic"].casefold():
         img = Image.new("RGB", (W, H), (3, 7, 28))
         draw = ImageDraw.Draw(img, "RGBA")
